@@ -33,6 +33,9 @@
     <ClCompile Include="SVMClassifier.cpp">
       <Filter>Файлы ресурсов\Classifier</Filter>
     </ClCompile>
+    <ClCompile Include="MNISTLoader.cpp">
+      <Filter>Файлы ресурсов\DataSet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mat.h">
@@ -52,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="DataSet.h">
       <Filter>Файлы ресурсов\DataSet</Filter>
+    </ClInclude>
+    <ClInclude Include="InnerPointSolver.h">
+      <Filter>Файлы ресурсов\Quadric Solver</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

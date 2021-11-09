@@ -3,31 +3,35 @@
 #include <vector>
 #include <utility>
 
-template<size_t size>
 class vec {
 public:
+  size_t size = 0;
   std::vector<double> vect;
 
   // default constructor
-  vec() {
+  vec(size_t size) {
+    this->size = size;
     vect = std::vector<double>(size, 0);
   }
 
   // copy constructor
-  vec(const vec<size>& v) {
+  vec(const vec& v) {
+    size = v.size;
     vect = std::vector<double>(size, 0);
     for (unsigned int i = 0; i < size; i++)
       vect[i] = v.vect[i];
   }
 
   // move constructor
-  vec(vec<size>&& v) {
+  vec(vec&& v) {
+    size = v.size;
     vect = std::move(v.vect);
   }
 
   // copy operator=
-  vec<size>& operator= (const vec<size>& v) {
+  vec& operator= (const vec& v) {
     if (&v != this) {
+      size = v.size;
       vect = std::vector<double>(size, 0);
       for (unsigned int i = 0; i < size; i++)
         vect[i] = v.vect[i];
@@ -36,14 +40,15 @@ public:
   }
 
   // move operator=
-  vec<size>& operator= (vec<size>&& v) {
+  vec& operator= (vec&& v) {
+    size = v.size;
     vect = std::move(v.vect);
     return *this;
   }
 
   // sum operator
-  vec<size> operator+ (const vec<size>& v) {
-    vec<size> newVec;
+  vec operator+ (const vec& v) {
+    vec newVec(size);
 
     for (unsigned int i = 0; i < size; i++)
       newVec.vect[i] = v.vect[i] + vect[i];
@@ -52,7 +57,7 @@ public:
   }
 
   // dot operators
-  double operator* (const vec<size>& v) {
+  double operator* (const vec& v) {
     double res = 0;
     for (unsigned int i = 0; i < size; i++)
       res += vect[i] * v.vect[i];
@@ -60,8 +65,8 @@ public:
     return res;
   }
 
-  vec<size> operator* (const double& t) {
-    vec<size> newVec;
+  vec operator* (const double& t) {
+    vec newVec(size);
     for (unsigned int i = 0; i < size; i++)
       newVec.vect[i] = t * vect[i];
 

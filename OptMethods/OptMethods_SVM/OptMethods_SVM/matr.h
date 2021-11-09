@@ -9,84 +9,102 @@
  * size_w - ÿ»–»Õ¿ Ã¿“–»÷€ (n)
  * size_h - ¬€—Œ“¿ Ã¿“–»÷€ (m)
  */
-template<size_t size_w, size_t size_h>
 class matr {
 public:
-  std::vector<std::vector<double>> matrix; // array of horizontal lines
+  size_t size_w, size_h;
+  std::vector<double> matrix; // array of horizontal lines
 
   // default constructor
-  matr() {
-    matrix = std::vector<std::vector<double>>(size_h, std::vector<double>(size_w, 0));
+  matr(size_t size_w, size_t size_h) {
+    this->size_w = size_w;
+    this->size_h = size_h;
+    matrix = std::vector<double>(size_w * size_h, 0);
   }
 
   // copy constructor
-  matr(const matr<size_w, size_h>& mtr) {
-    matrix = std::vector<std::vector<double>>(size_h, std::vector<double>(size_w, 0));
+  matr(const matr& mtr) {
+    size_w = mtr.size_w;
+    size_h = mtr.size_h;
+    matrix = std::vector<double>(size_w * size_h, 0);
     for (unsigned int y = 0; y < size_h; y++)
       for (unsigned int x = 0; x < size_w; x++)
-        matrix[y][x] = mtr.matrix[y][x];
+        matrix[y * size_w + x] = mtr.matrix[y * size_w + x];
   }
 
   // move constructor
-  matr(matr<size_w, size_h>&& mtr) {
+  matr(matr&& mtr) {
+    size_w = mtr.size_w;
+    size_h = mtr.size_h;
     matrix = std::move(mtr.matrix);
   }
 
   // copy operator=
-  matr<size_w, size_h>& operator= (const matr<size_w, size_h>& mtr) {
+  matr& operator= (const matr& mtr) {
     if (&mtr != this) {
-      matrix = std::vector<std::vector<double>>(size_h, std::vector<double>(size_w, 0));
+      size_w = mtr.size_w;
+      size_h = mtr.size_h;
+      matrix = std::vector<double>(size_w * size_h, 0);
       for (unsigned int y = 0; y < size_h; y++)
         for (unsigned int x = 0; x < size_w; x++)
-          matrix[y][x] = mtr.matrix[y][x];
+          matrix[y * size_w + x] = mtr.matrix[y * size_w + x];
     }
     return *this;
   }
 
   // move operator=
-  matr<size_w, size_h>& operator= (matr<size_w, size_h>&& mtr) {
+  matr& operator= (matr&& mtr) {
+    size_w = mtr.size_w;
+    size_h = mtr.size_h;
     matrix = std::move(mtr.matrix);
     return *this;
   }
 
   // transponse
-  matr<size_h, size_w> makeTransponse () {
-    matr<size_h, size_w> mtrTrnsp;
+  matr makeTransponse () {
+    matr mtrTrnsp(size_h, size_w);
 
     for (unsigned int y = 0; y < size_h; y++)
       for (unsigned int x = 0; x < size_w; x++)
-        mtrTrnsp.matrix[x][y] = matrix[y][x];
+        mtrTrnsp.matrix[x * size_h + y] = matrix[y * size_w + x];
 
     return mtrTrnsp;
   }
 
   // sum operator
-  matr<size_w, size_h> operator+(const matr<size_w, size_h>& mtr) {
-    matr<size_w, size_h> newMatr;
+  matr operator+(const matr& mtr) {
+    matr newMatr(size_w, size_h);
 
     for (unsigned int y = 0; y < size_h; y++)
       for (unsigned int x = 0; x < size_w; x++)
-        newMatr.matrix[y][x] = matrix[y][x] + mtr.matrix[y][x];
+        newMatr.matrix[y * size_w + x] = matrix[y * size_w + x] + mtr.matrix[y * size_w + x];
 
     return newMatr;
   }
 
-  matr<size_w, size_h>& operator+=(const matr<size_w, size_h>& mtr) {
+  matr& operator+=(const matr& mtr) {
     for (unsigned int y = 0; y < size_h; y++)
       for (unsigned int x = 0; x < size_w; x++)
-        matrix[y][x] += mtr.matrix[y][x];
+        matrix[y * size_w + x] += mtr.matrix[y * size_w + x];
 
     return *this;
   }
 
   // mul operator
-  vec<size_h> operator*(const vec<size_w>& v);
+  vec operator*(const vec& v) {
+    vec newVec(size_h);
+
+    for (unsigned int y = 0; y < size_h; y++)
+      for (unsigned int x = 0; x < size_w; x++)
+        newVec.vect[y] += matrix[y * size_w + x] * v.vect[x];
+
+    return newVec;
+  }
 
   // vec mul operators
-  std::vector<double>& operator[](unsigned int index) {
+  double * operator[](unsigned int index) {
     if (index >= size_h)
       throw std::exception("Uncorrect index of vec");
 
-    return matrix[index];
+    return &matrix[index * size_w];
   }
 };
